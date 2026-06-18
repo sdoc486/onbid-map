@@ -96,6 +96,55 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
 .btn-ob{display:block;text-align:center;background:#1a73e8;color:#fff;padding:7px;border-radius:4px;text-decoration:none;margin-top:9px;font-size:12px;font-weight:bold;}
 .btn-ob:hover{background:#155fbd;}
 
+/* ── 모바일 전용 기본값 ────────────────────────── */
+#m-tabbar,#m-chips,#m-fab,#m-sheet,#m-filter-apply-bar{display:none;}
+
+@media(max-width:768px){
+  body{padding-bottom:56px;}
+  #stats-bar{padding:5px 10px;min-height:38px;gap:8px;}
+  #stats-bar h1,#stats-date,#stat-new7{display:none;}
+  .stat{min-width:42px;}.stat-n{font-size:15px;}.stat-l{font-size:9px;}
+  #main{flex-direction:column;overflow:visible;flex:none;}
+  #map-wrap{display:none;width:100%;flex:none;position:relative;}
+  #sidebar{display:none;width:100%;min-width:0;flex:none;border-left:none;}
+  body[data-tab=map] #map-wrap{display:block;height:calc(100vh - 38px - 56px);}
+  body[data-tab=map] #m-chips{display:flex;}
+  body[data-tab=map] #m-fab{display:flex;}
+  body[data-tab=list] #sidebar{display:flex;height:calc(100vh - 38px - 56px);flex-direction:column;}
+  body[data-tab=list] #filter-area,body[data-tab=list] #detail{display:none;}
+  body[data-tab=filter] #sidebar{display:flex;height:calc(100vh - 38px - 56px);flex-direction:column;}
+  body[data-tab=filter] #list-hdr,body[data-tab=filter] #item-list,body[data-tab=filter] #detail{display:none;}
+  body[data-tab=filter] #filter-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:block;padding-bottom:72px;}
+  body[data-tab=filter] #m-filter-apply-bar{display:flex;}
+  #m-tabbar{display:flex;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #ddd;z-index:500;box-shadow:0 -1px 4px rgba(0,0,0,.08);}
+  .m-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border:none;background:none;font-size:10px;color:#888;cursor:pointer;gap:2px;padding:4px 0;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .m-tab-icon{font-size:20px;line-height:1.2;}
+  .m-tab.active{color:#1a73e8;}
+  #map-search{left:10px;right:10px;}
+  #map-search-input{width:auto;flex:1;min-width:0;}
+  #m-chips{position:absolute;top:54px;left:0;right:0;z-index:200;overflow-x:auto;gap:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;padding:4px 10px;}
+  #m-chips::-webkit-scrollbar{display:none;}
+  .m-chip{white-space:nowrap;padding:7px 14px;border-radius:20px;border:1.5px solid #ddd;background:rgba(255,255,255,.95);font-size:12px;cursor:pointer;font-family:inherit;color:#555;flex-shrink:0;line-height:1;-webkit-tap-highlight-color:transparent;}
+  .m-chip.active{border-color:#1a73e8;background:#1a73e8;color:#fff;}
+  #m-fab{position:absolute;bottom:16px;right:12px;z-index:200;flex-direction:column;gap:8px;align-items:center;}
+  .m-fab-btn{width:44px;height:44px;border-radius:50%;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.28);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .m-fab-btn.active{background:#1a73e8;color:#fff;}
+  #rv-btn,#cadastral-btn,#satellite-btn{display:none;}
+  #rv-hint-badge{top:90px;}
+  #m-sheet{position:fixed;left:0;right:0;bottom:56px;z-index:400;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.18);height:50vh;max-height:90vh;overflow:hidden;flex-direction:column;transition:height .25s ease;}
+  #m-sheet.open{display:flex;}
+  #m-sheet-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:10px auto 4px;flex-shrink:0;cursor:grab;touch-action:none;}
+  #m-sheet-close{position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;color:#bbb;cursor:pointer;padding:4px 6px;line-height:1;}
+  #m-sheet-scroll{flex:1;overflow-y:auto;padding:0 16px 20px;-webkit-overflow-scrolling:touch;}
+  #m-filter-apply-bar{position:fixed;bottom:56px;left:0;right:0;z-index:300;background:#fff;border-top:1px solid #eee;padding:10px 14px;gap:8px;align-items:center;box-shadow:0 -2px 8px rgba(0,0,0,.07);}
+  #m-apply-btn{flex:1;padding:14px;background:#1a73e8;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  #m-reset-btn2{padding:14px 12px;background:#888;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;white-space:nowrap;}
+  .card{padding:12px 14px;}.c-name{font-size:13px;}.c-meta,.c-price{font-size:12px;}
+  .cb-item{padding:5px 6px;font-size:13px;min-height:36px;}
+  .f-inp{height:40px;font-size:14px;}.f-btn{height:40px;padding:0 14px;font-size:13px;}
+  .f-lbl{font-size:13px;margin-bottom:6px;}.f-sec{margin-bottom:10px;}
+}
+
 /* password overlay */
 #pw-overlay{position:fixed;inset:0;background:#1a1a2e;display:flex;align-items:center;justify-content:center;z-index:9999;}
 #pw-box{background:#fff;border-radius:10px;padding:40px 36px;min-width:300px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.4);}
@@ -150,7 +199,7 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
   <div class="stat"><span class="stat-n" style="color:#e67e22" id="s-new-today">-</span><span class="stat-l">오늘신규</span></div>
   <div class="stat"><span class="stat-n" style="color:#6ea8fe" id="s-active">-</span><span class="stat-l">진행중</span></div>
   <div class="stat"><span class="stat-n" style="color:#ff8080" id="s-upcoming">-</span><span class="stat-l">30일내 예정</span></div>
-  <div class="stat"><span class="stat-n" style="color:#c084fc" id="s-new">-</span><span class="stat-l">신규(7일)</span></div>
+  <div class="stat" id="stat-new7"><span class="stat-n" style="color:#c084fc" id="s-new">-</span><span class="stat-l">신규(7일)</span></div>
   <span id="stats-date">2026년 06월 18일 기준</span>
 </div>
 
@@ -173,6 +222,12 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
         <button id="rv-close" onclick="toggleRV()">✕ 닫기</button>
       </div>
       <div id="roadview"></div>
+    </div>
+    <div id="m-chips"></div>
+    <div id="m-fab">
+      <button class="m-fab-btn" id="m-fab-rv"  onclick="mFabRV()"  title="로드뷰">&#128246;</button>
+      <button class="m-fab-btn" id="m-fab-cad" onclick="mFabCad()" title="지적편집도">&#128506;</button>
+      <button class="m-fab-btn" id="m-fab-sat" onclick="mFabSat()" title="위성지도">&#127759;</button>
     </div>
   </div>
 
@@ -224,6 +279,27 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
       </div>
     </div>
   </div>
+</div>
+
+<div id="m-sheet">
+  <div id="m-sheet-handle"></div>
+  <button id="m-sheet-close" onclick="closeSheet()">&#215;</button>
+  <div id="m-sheet-scroll"></div>
+</div>
+<div id="m-filter-apply-bar">
+  <button id="m-reset-btn2" onclick="mobileReset()">초기화</button>
+  <button id="m-apply-btn"  onclick="mobileApply()">적용</button>
+</div>
+<div id="m-tabbar">
+  <button class="m-tab active" data-tab="map"    onclick="switchTab('map')">
+    <span class="m-tab-icon">&#128506;</span>지도
+  </button>
+  <button class="m-tab" data-tab="list"   onclick="switchTab('list')">
+    <span class="m-tab-icon">&#128203;</span>목록
+  </button>
+  <button class="m-tab" data-tab="filter" onclick="switchTab('filter')">
+    <span class="m-tab-icon">&#128269;</span>필터
+  </button>
 </div>
 
 <script>
@@ -403,14 +479,16 @@ function showDetail(it) {
 
 /* ── 마커 ─────────────────────────────────────── */
 function mkImg(color) {
-  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30">'
+  const mobile = window.innerWidth <= 768;
+  const w = mobile ? 28 : 22, h = mobile ? 38 : 30;
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 22 30">'
     + '<path d="M11 0C4.9 0 0 4.9 0 11c0 7.7 11 19 11 19s11-11.3 11-19C22 4.9 17.1 0 11 0z" fill="' + color + '"/>'
     + '<circle cx="11" cy="11" r="4.5" fill="white" fill-opacity="0.9"/>'
     + '</svg>';
   return new kakao.maps.MarkerImage(
     'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg),
-    new kakao.maps.Size(22, 30),
-    {offset: new kakao.maps.Point(11, 30)}
+    new kakao.maps.Size(w, h),
+    {offset: new kakao.maps.Point(w/2, h)}
   );
 }
 
@@ -452,7 +530,7 @@ function selectItem(id) {
   const card = document.getElementById('card-'+id);
   if (card) { card.classList.add('sel'); card.scrollIntoView({behavior:'smooth',block:'nearest'}); }
   if (map && it.lat && it.lng) map.panTo(new kakao.maps.LatLng(it.lat, it.lng));
-  showDetail(it);
+  if (isMobile()) { switchTab('map'); openSheet(it); } else { showDetail(it); }
 }
 
 /* ── 전체 렌더 ────────────────────────────────── */
@@ -460,6 +538,7 @@ function renderAll() {
   updateStats(filtered);
   renderList(filtered);
   renderMarkers(filtered);
+  if (isMobile()) updateApplyCount();
 }
 
 /* ── 데이터 렌더 (지도와 독립) ────────────────── */
@@ -467,6 +546,11 @@ function initData() {
   initFilters();
   updateStats(ITEMS);
   renderList(ITEMS);
+  if (isMobile()) {
+    document.body.setAttribute('data-tab', 'map');
+    buildChips();
+    updateApplyCount();
+  }
 }
 
 /* ── 지도 초기화 ──────────────────────────────── */
@@ -485,6 +569,7 @@ function initMap() {
       level: 8,
     });
     renderMarkers(filtered);
+    if (isMobile()) setTimeout(function(){ kakao.maps.event.trigger(map,'resize'); }, 100);
   });
 }
 
@@ -604,6 +689,98 @@ function searchAddr() {
     }
   });
 }
+
+/* ── 모바일 유틸 / 탭 ─────────────────────────── */
+function isMobile() { return window.innerWidth <= 768; }
+
+function switchTab(tab) {
+  document.body.setAttribute('data-tab', tab);
+  document.querySelectorAll('.m-tab').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
+  if (tab !== 'map') closeSheet();
+  if (tab === 'map' && map) setTimeout(function(){ kakao.maps.event.trigger(map,'resize'); }, 50);
+  if (tab === 'filter') updateApplyCount();
+}
+
+/* ── 빠른 필터 칩 ─────────────────────────────── */
+var CHIP_DEFS = [
+  {key:'all',label:'전체'},{key:'orange',label:'오늘신규'},
+  {key:'blue',label:'진행중'},{key:'red',label:'30일내'},{key:'purple',label:'7일이내'},
+];
+var activeChip = 'all';
+
+function buildChips() {
+  var el = document.getElementById('m-chips');
+  if (!el) return;
+  el.innerHTML = CHIP_DEFS.map(function(c) {
+    return '<button class="m-chip'+(c.key===activeChip?' active':'')+'" onclick="selectChip(''+c.key+'')">'+c.label+'</button>';
+  }).join('');
+}
+
+function selectChip(key) {
+  activeChip = key;
+  buildChips();
+  document.querySelectorAll('.cb-color').forEach(function(cb){ cb.checked = (key==='all'||cb.value===key); });
+  applyFilter();
+}
+
+/* ── 필터 적용 카운트 ─────────────────────────── */
+function updateApplyCount() {
+  var btn = document.getElementById('m-apply-btn');
+  if (btn) btn.textContent = '적용 ('+filtered.length+'건)';
+}
+function mobileApply() { applyFilter(); switchTab('map'); }
+function mobileReset() { activeChip='all'; resetFilter(); buildChips(); }
+
+/* ── 슬라이드업 시트 ──────────────────────────── */
+function openSheet(it) {
+  var sheet = document.getElementById('m-sheet');
+  if (!sheet) return;
+  document.getElementById('m-sheet-scroll').innerHTML = buildSheetContent(it);
+  sheet.style.height = '50vh';
+  sheet.classList.add('open');
+}
+function closeSheet() {
+  var s = document.getElementById('m-sheet');
+  if (s) s.classList.remove('open');
+}
+function buildSheetContent(it) {
+  var ratio = it.appraisal_ratio||0;
+  var url = it.onbid_no
+    ? 'https://www.onbid.co.kr/op/cta/cltragent/collateralLots/collateralLotsDetail.do?cltrNo='+encodeURIComponent(it.onbid_no)
+    : 'https://www.onbid.co.kr';
+  var price = it.min_bid ? fmtAmt(it.min_bid) : (it.min_bid_str||'-');
+  var addr = [it.sido,it.sigungu,it.emd].filter(Boolean).join(' ');
+  var use  = [it.use_lv1,it.use_lv2,it.use_lv3].filter(Boolean).join(' > ');
+  var rows = [['소재지',addr],['감정평가액',fmtAmt(it.appraisal)],['최저입찰가',price],
+    ['유찰횟수',it.unsold_cnt!=null?it.unsold_cnt+'회':null],
+    ['입찰기간',(it.bid_start||'-')+' ~ '+(it.bid_end||'-')],
+    ['입찰상태',it.status],['용도',use]].filter(function(r){return r[1];});
+  return '<div style="font-size:15px;font-weight:bold;color:#1a1a2e;margin-bottom:8px;line-height:1.4;">'+esc(it.name)+'</div>'
+    +'<div style="font-size:11px;color:#999;margin-bottom:2px;">감정가 대비 최저입찰가</div>'
+    +'<div class="bar-bg"><div class="bar-fg" style="width:'+Math.min(ratio,100)+'%"></div></div>'
+    +'<div style="font-size:11px;color:#666;margin-bottom:10px;">'+(ratio?ratio.toFixed(1)+'%':'-')+'</div>'
+    +rows.map(function(r){return '<div class="d-row"><span class="d-lbl">'+esc(r[0])+'</span><span class="d-val">'+val(r[1])+'</span></div>';}).join('')
+    +'<a href="'+url+'" target="_blank" rel="noopener" class="btn-ob" style="margin-top:14px;padding:16px;font-size:15px;">온비드에서 보기 &rarr;</a>';
+}
+
+/* ── 시트 드래그 ──────────────────────────────── */
+(function(){
+  var startY=0,startH=0,drag=false;
+  document.addEventListener('DOMContentLoaded',function(){
+    var handle=document.getElementById('m-sheet-handle'), sheet=document.getElementById('m-sheet');
+    if(!handle||!sheet) return;
+    handle.addEventListener('touchstart',function(e){startY=e.touches[0].clientY;startH=sheet.offsetHeight;drag=true;sheet.style.transition='none';e.preventDefault();},{passive:false});
+    document.addEventListener('touchmove',function(e){if(!drag)return;sheet.style.height=Math.max(80,Math.min(window.innerHeight*.92,startH-(e.touches[0].clientY-startY)))+'px';e.preventDefault();},{passive:false});
+    document.addEventListener('touchend',function(){if(!drag)return;drag=false;sheet.style.transition='';var h=sheet.offsetHeight,wh=window.innerHeight;if(h<wh*.25)closeSheet();else if(h>wh*.65)sheet.style.height='90vh';else sheet.style.height='50vh';});
+  });
+})();
+
+/* ── 모바일 FAB ───────────────────────────────── */
+function mFabRV()  { toggleRV();        var b=document.getElementById('m-fab-rv');  if(b)b.classList.toggle('active',rvOn); }
+function mFabCad() { toggleCadastral(); var b=document.getElementById('m-fab-cad'); if(b)b.classList.toggle('active',cadastralOn); }
+function mFabSat() { toggleSatellite(); var b=document.getElementById('m-fab-sat'); if(b)b.classList.toggle('active',satelliteOn); }
 
 /* ── 시작 ─────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', function() {

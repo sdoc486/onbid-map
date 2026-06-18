@@ -658,6 +658,9 @@ function toggleSatellite() {
 }
 
 /* ── 주소 검색 ────────────────────────────────── */
+var _searchMarker = null;
+var _searchIw = null;
+
 function searchAddr() {
   var q = document.getElementById('map-search-input').value.trim();
   var msg = document.getElementById('map-search-msg');
@@ -670,19 +673,34 @@ function searchAddr() {
     setTimeout(function(){ msg.style.display = 'none'; }, 3000);
   }
 
+  function placeSearchMarker(lat, lng, label) {
+    if (_searchMarker) _searchMarker.setMap(null);
+    if (_searchIw) _searchIw.close();
+    var pos = new kakao.maps.LatLng(lat, lng);
+    _searchMarker = new kakao.maps.Marker({ position: pos, map: map });
+    _searchIw = new kakao.maps.InfoWindow({
+      content: '<div style="padding:5px 10px;font-size:12px;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;">' + label + '</div>',
+      removable: true
+    });
+    _searchIw.open(map, _searchMarker);
+    map.setCenter(pos);
+    map.setLevel(4);
+    kakao.maps.event.addListener(_searchMarker, 'click', function() {
+      _searchIw.open(map, _searchMarker);
+    });
+  }
+
   // 1차: 주소 검색
   var gc = new kakao.maps.services.Geocoder();
   gc.addressSearch(q, function(result, status) {
     if (status === kakao.maps.services.Status.OK) {
-      map.setCenter(new kakao.maps.LatLng(result[0].y, result[0].x));
-      map.setLevel(4);
+      placeSearchMarker(result[0].y, result[0].x, result[0].address_name || q);
     } else {
       // 2차: 키워드(장소명) 검색
       var ps = new kakao.maps.services.Places();
       ps.keywordSearch(q, function(data, status2) {
         if (status2 === kakao.maps.services.Status.OK) {
-          map.setCenter(new kakao.maps.LatLng(data[0].y, data[0].x));
-          map.setLevel(4);
+          placeSearchMarker(data[0].y, data[0].x, data[0].place_name || q);
         } else {
           showMsg('검색 결과가 없습니다: ' + q);
         }

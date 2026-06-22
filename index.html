@@ -488,7 +488,7 @@ function initFilters() {
 
   const types = [...new Set(ITEMS.map(i=>i.prpt_type).filter(Boolean))].sort();
   const stats = [...new Set(ITEMS.map(i=>i.status).filter(Boolean))].sort();
-  const use2s = [...new Set(ITEMS.map(i=>i.use_lv2).filter(Boolean))].sort();
+  const use2s = [...new Set([...ITEMS, ...PVCT].map(i=>i.use_lv2).filter(Boolean))].sort();
   buildCbs('f-type',   types, 'cb-type');
   buildCbs('f-status', stats, 'cb-status');
   buildCbs('f-use2',   use2s, 'cb-use2');
@@ -514,6 +514,7 @@ function applyFilter() {
     return true;
   });
   filteredPvct = PVCT.filter(i => {
+    if (use2s.length && !use2s.includes(i.use_lv2)) return false;
     if (minDisc > 0) { const dr = discRate(i); if (dr == null || dr < minDisc) return false; }
     return true;
   });

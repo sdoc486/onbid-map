@@ -112,7 +112,7 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
 .btn-ob:hover{background:#155fbd;}
 
 /* ── 모바일 전용 기본값 ────────────────────────── */
-#m-tabbar,#m-chips,#m-fab,#m-sheet,#m-filter-apply-bar{display:none;}
+#m-tabbar,#m-chips,#m-fab,#m-sheet,#m-filter-apply-bar,#m-list-tabs{display:none;}
 
 @media(max-width:768px){
   /* 기본 레이아웃 */
@@ -188,6 +188,14 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:#1a73e8;cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);}
   input[type=range]::-webkit-slider-runnable-track{height:6px;background:#ddd;border-radius:3px;}
   .disc-badge{font-size:11px;padding:2px 6px;}
+
+  /* 목록 서브탭 */
+  #m-list-tabs{display:flex;flex-shrink:0;background:#f5f5f5;border-bottom:1px solid #ddd;}
+  .m-list-tab{flex:1;padding:11px 4px;border:none;background:none;font-size:13px;color:#888;cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;-webkit-tap-highlight-color:transparent;min-height:44px;}
+  .m-list-tab.active{color:#1a73e8;border-bottom-color:#1a73e8;background:#fff;font-weight:bold;}
+  /* pvct 카드 */
+  .pvct-card{display:flex;gap:8px;padding:13px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .pvct-card:active{background:#f0fff4;}
 
   /* 비밀번호 오버레이 */
   #pw-box{min-width:0;width:88%;padding:32px 24px;}
@@ -347,6 +355,11 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
     </div>
 
     <div id="list-hdr">전체 <span id="list-cnt">0</span>건</div>
+    <div id="m-list-tabs">
+      <button class="m-list-tab active" data-listtype="items" onclick="switchListType('items')">진행중</button>
+      <button class="m-list-tab" data-listtype="pvct" onclick="switchListType('pvct')">수의계약</button>
+      <button class="m-list-tab" data-listtype="lttrs" onclick="switchListType('lttrs')">낙찰</button>
+    </div>
     <div id="item-list"></div>
 
     <div id="detail">
@@ -846,7 +859,9 @@ function selectItem(id) {
 /* ── 전체 렌더 ────────────────────────────────── */
 function renderAll() {
   updateStats(filtered);
-  renderList(filtered);
+  if (isMobile() && activeListType === 'pvct') renderPvctList();
+  else if (isMobile() && activeListType === 'lttrs') renderLttrsList();
+  else renderList(filtered);
   renderMarkers(filtered);
   renderLttrsMarkers();
   renderPvctMarkers();
@@ -1071,8 +1086,81 @@ function updateApplyCount() {
   var btn = document.getElementById('m-apply-btn');
   if (btn) btn.textContent = '적용 ('+filtered.length+'건)';
 }
-function mobileApply() { applyFilter(); switchTab('map'); }
+function mobileApply() { applyFilter(); switchTab('list'); }
 function mobileReset() { activeChip='all'; resetFilter(); buildChips(); }
+
+/* ── 목록 서브탭 ──────────────────────────────── */
+var activeListType = 'items';
+
+function switchListType(type) {
+  activeListType = type;
+  document.querySelectorAll('.m-list-tab').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.listtype === type);
+  });
+  var hdr = document.getElementById('list-hdr');
+  if (hdr) hdr.style.display = (type === 'items') ? '' : 'none';
+  if (type === 'pvct') renderPvctList();
+  else if (type === 'lttrs') renderLttrsList();
+  else renderList(filtered);
+}
+
+function renderPvctList() {
+  var el = document.getElementById('item-list');
+  if (!el) return;
+  if (!filteredPvct || filteredPvct.length === 0) {
+    el.innerHTML = '<div style="padding:32px;text-align:center;color:#aaa;font-size:14px;">수의계약 가능 물건이 없습니다</div>';
+    return;
+  }
+  el.innerHTML = filteredPvct.map(function(it) {
+    var addr = [it.sido, it.sigungu, it.emd].filter(Boolean).join(' ');
+    var dr = (it.appraisal && it.min_bid) ? (1 - it.min_bid / it.appraisal) * 100 : null;
+    var badge = dr != null ? '<span class="disc-badge" style="color:#c00;border:1px solid #fbb;background:#fff5f5;">-' + dr.toFixed(1) + '%</span>' : '';
+    return '<div class="pvct-card" onclick="selectPvctItem('' + it.id + '')">'
+      + '<div class="c-bar" style="background:#27ae60;"></div>'
+      + '<div class="c-body" style="flex:1;min-width:0;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4px;">'
+      + '<div class="c-name" style="flex:1;min-width:0;">◆ ' + esc(it.name) + '</div>'
+      + badge + '</div>'
+      + '<div class="c-meta">' + esc(addr) + (it.prpt_type ? ' · ' + esc(it.prpt_type) : '') + '</div>'
+      + '<div class="c-price">감정가 ' + fmtAmt(it.appraisal) + ' / 수의계약가 ' + fmtAmt(it.min_bid) + '</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function renderLttrsList() {
+  var el = document.getElementById('item-list');
+  if (!el) return;
+  if (!LTTRS || LTTRS.length === 0) {
+    el.innerHTML = '<div style="padding:32px;text-align:center;color:#aaa;font-size:14px;">낙찰 완료 물건이 없습니다</div>';
+    return;
+  }
+  el.innerHTML = LTTRS.map(function(it) {
+    var addr = [it.sido, it.sigungu, it.emd].filter(Boolean).join(' ');
+    return '<div class="pvct-card" onclick="selectLttrsItem('' + it.id + '')">'
+      + '<div class="c-bar" style="background:#f0b429;"></div>'
+      + '<div class="c-body" style="flex:1;min-width:0;">'
+      + '<div class="c-name">★ ' + esc(it.name) + '</div>'
+      + '<div class="c-meta">' + esc(addr) + (it.prpt_type ? ' · ' + esc(it.prpt_type) : '') + '</div>'
+      + '<div class="c-price">감정가 ' + fmtAmt(it.appraisal) + ' / 최저 ' + fmtAmt(it.min_bid) + '</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function selectPvctItem(id) {
+  var it = filteredPvct.find(function(i){ return i.id === id; });
+  if (!it) return;
+  if (map && it.lat && it.lng) map.panTo(new kakao.maps.LatLng(it.lat, it.lng));
+  showPvctDetail(it);
+  switchTab('map');
+}
+
+function selectLttrsItem(id) {
+  var it = LTTRS.find(function(i){ return i.id === id; });
+  if (!it) return;
+  if (map && it.lat && it.lng) map.panTo(new kakao.maps.LatLng(it.lat, it.lng));
+  showLttrsDetail(it);
+  switchTab('map');
+}
 
 /* ── 슬라이드업 시트 ──────────────────────────── */
 function openPvctSheet(it, rows, url) {

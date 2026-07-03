@@ -11,7 +11,9 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
 /* stats bar */
 #stats-bar{background:#1a1a2e;color:#fff;padding:8px 16px;display:flex;align-items:center;gap:20px;flex-shrink:0;min-height:46px;}
 #stats-bar h1{font-size:14px;font-weight:bold;white-space:nowrap;}
-.stat{display:flex;flex-direction:column;align-items:center;min-width:56px;}
+.stat{display:flex;flex-direction:column;align-items:center;min-width:56px;cursor:pointer;border-radius:4px;padding:2px 4px;transition:background .15s;user-select:none;}
+.stat:hover{background:rgba(255,255,255,.12);}
+.stat.stat-active{background:rgba(255,255,255,.22);box-shadow:0 0 0 1px rgba(255,255,255,.45);}
 .stat-n{font-size:18px;font-weight:bold;line-height:1.1;}
 .stat-l{font-size:10px;color:#aaa;margin-top:1px;}
 #stats-date{margin-left:auto;font-size:11px;color:#888;white-space:nowrap;}
@@ -253,16 +255,16 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
 
 <div id="stats-bar">
   <h1>온비드 부동산 공매</h1>
-  <div class="stat"><span class="stat-n" id="s-total">-</span><span class="stat-l">전체</span></div>
-  <div class="stat"><span class="stat-n" style="color:#e67e22" id="s-new-today">-</span><span class="stat-l">오늘신규</span></div>
-  <div class="stat" id="stat-new7"><span class="stat-n" style="color:#c084fc" id="s-new">-</span><span class="stat-l">신규(7일)</span></div>
-  <div class="stat"><span class="stat-n" style="color:#6ea8fe" id="s-active">-</span><span class="stat-l">진행중</span></div>
-  <div class="stat"><span class="stat-n" style="color:#ff8080" id="s-upcoming">-</span><span class="stat-l">30일내 예정</span></div>
-  <div class="stat"><span class="stat-n" style="color:#ff9966" id="s-upcoming60">-</span><span class="stat-l">60일내 예정</span></div>
-  <div class="stat"><span class="stat-n" style="color:#f0c040" id="s-upcoming90">-</span><span class="stat-l">90일내 예정</span></div>
-  <div class="stat"><span class="stat-n" style="color:#f0b429" id="s-lttrs">-</span><span class="stat-l">낙찰</span></div>
-  <div class="stat"><span class="stat-n" style="color:#e67e22" id="s-pvct-new">-</span><span class="stat-l">수의계약신규</span></div>
-  <div class="stat"><span class="stat-n" style="color:#27ae60" id="s-pvct">-</span><span class="stat-l">수의계약</span></div>
+  <div class="stat" id="stat-btn-total" onclick="filterByStat('total')"><span class="stat-n" id="s-total">-</span><span class="stat-l">전체</span></div>
+  <div class="stat" id="stat-btn-new-today" onclick="filterByStat('new-today')"><span class="stat-n" style="color:#e67e22" id="s-new-today">-</span><span class="stat-l">오늘신규</span></div>
+  <div class="stat" id="stat-btn-new" onclick="filterByStat('new')"><span class="stat-n" style="color:#c084fc" id="s-new">-</span><span class="stat-l">신규(7일)</span></div>
+  <div class="stat" id="stat-btn-active" onclick="filterByStat('active')"><span class="stat-n" style="color:#6ea8fe" id="s-active">-</span><span class="stat-l">진행중</span></div>
+  <div class="stat" id="stat-btn-upcoming" onclick="filterByStat('upcoming')"><span class="stat-n" style="color:#ff8080" id="s-upcoming">-</span><span class="stat-l">30일내 예정</span></div>
+  <div class="stat" id="stat-btn-upcoming60" onclick="filterByStat('upcoming60')"><span class="stat-n" style="color:#ff9966" id="s-upcoming60">-</span><span class="stat-l">60일내 예정</span></div>
+  <div class="stat" id="stat-btn-upcoming90" onclick="filterByStat('upcoming90')"><span class="stat-n" style="color:#f0c040" id="s-upcoming90">-</span><span class="stat-l">90일내 예정</span></div>
+  <div class="stat" id="stat-btn-lttrs" onclick="filterByStat('lttrs')"><span class="stat-n" style="color:#f0b429" id="s-lttrs">-</span><span class="stat-l">낙찰</span></div>
+  <div class="stat" id="stat-btn-pvct-new" onclick="filterByStat('pvct-new')"><span class="stat-n" style="color:#e67e22" id="s-pvct-new">-</span><span class="stat-l">수의계약신규</span></div>
+  <div class="stat" id="stat-btn-pvct" onclick="filterByStat('pvct')"><span class="stat-n" style="color:#27ae60" id="s-pvct">-</span><span class="stat-l">수의계약</span></div>
   <span id="stats-date">2026년 06월 30일 기준</span>
 </div>
 
@@ -318,10 +320,6 @@ body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;display:flex;f
           <option value="disc">할인율 높은 순</option>
           <option value="appraisal">감정가 높은 순</option>
         </select>
-      </div>
-      <div class="f-sec">
-        <div class="f-lbl">일정분류</div>
-        <div class="cb-group" id="f-color"></div>
       </div>
       <div class="f-sec">
         <div class="f-lbl">재산유형</div>
@@ -408,6 +406,7 @@ let map, markers = [], tips = [], filtered = ITEMS.slice(), selId = null;
 let lttrsMarkers = [], lttrsTips = [], showLttrs = true;
 let pvctMarkers  = [], pvctTips  = [], showPvct  = true;
 let filteredPvct = PVCT.slice();
+let activeStat = null;
 
 /* ── 유틸 ─────────────────────────────────────── */
 function fmtAmt(v) {
@@ -477,17 +476,7 @@ const COLOR_META = [
 ];
 
 function initFilters() {
-  // 일정분류 (고정 항목)
-  const fc = document.getElementById('f-color');
-  fc.innerHTML = '';
-  COLOR_META.forEach(c => {
-    const lbl = document.createElement('label');
-    lbl.className = 'cb-item';
-    lbl.innerHTML = '<input type="checkbox" class="cb-color" value="' + c.value + '" checked>'
-      + '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'
-      + c.color + ';margin:0 3px 0 2px;flex-shrink:0;"></span>' + c.label;
-    fc.appendChild(lbl);
-  });
+  // 일정분류 체크박스는 통계 버튼으로 대체됨 (f-color 섹션 제거됨)
 
   const types = [...new Set(ITEMS.map(i=>i.prpt_type).filter(Boolean))].sort();
   const stats = [...new Set(ITEMS.map(i=>i.status).filter(Boolean))].sort();
@@ -497,8 +486,43 @@ function initFilters() {
   buildCbs('f-use2',   use2s, 'cb-use2');
 }
 
+/* ── 통계 클릭 필터 ──────────────────────────── */
+const STAT_COLOR_MAP = {
+  'new-today':'orange','new':'__new7__','active':'blue',
+  'upcoming':'red','upcoming60':'coral','upcoming90':'amber','lttrs':'gold'
+};
+
+function filterByStat(key) {
+  if (activeStat === key) {
+    activeStat = null;
+    document.querySelectorAll('.stat').forEach(el => el.classList.remove('stat-active'));
+    filtered = ITEMS.slice(); filteredPvct = PVCT.slice();
+    renderAll(); return;
+  }
+  activeStat = key;
+  document.querySelectorAll('.stat').forEach(el => el.classList.remove('stat-active'));
+  const btn = document.getElementById('stat-btn-' + key);
+  if (btn) btn.classList.add('stat-active');
+
+  if (key === 'total') {
+    filtered = ITEMS.slice(); filteredPvct = PVCT.slice();
+  } else if (key === 'pvct') {
+    filtered = []; filteredPvct = PVCT.slice();
+  } else if (key === 'pvct-new') {
+    filtered = []; filteredPvct = PVCT.filter(isPvctNew);
+  } else if (STAT_COLOR_MAP[key] === '__new7__') {
+    filtered = ITEMS.filter(i => i.new7); filteredPvct = [];
+  } else {
+    const col = STAT_COLOR_MAP[key];
+    filtered = ITEMS.filter(i => i.color === col); filteredPvct = [];
+  }
+  renderAll();
+}
+
 /* ── 필터 적용 ────────────────────────────────── */
 function applyFilter() {
+  activeStat = null;
+  document.querySelectorAll('.stat').forEach(el => el.classList.remove('stat-active'));
   const colors   = [...document.querySelectorAll('.cb-color:checked')].map(e=>e.value);
   const types    = [...document.querySelectorAll('.cb-type:checked')].map(e=>e.value);
   const stats    = [...document.querySelectorAll('.cb-status:checked')].map(e=>e.value);
@@ -525,6 +549,8 @@ function applyFilter() {
 }
 
 function resetFilter() {
+  activeStat = null;
+  document.querySelectorAll('.stat').forEach(el => el.classList.remove('stat-active'));
   document.getElementById('f-min').value = '';
   document.getElementById('f-max').value = '';
   document.getElementById('f-disc').value = 0;
@@ -1098,8 +1124,9 @@ function buildChips() {
 function selectChip(key) {
   activeChip = key;
   buildChips();
-  document.querySelectorAll('.cb-color').forEach(function(cb){ cb.checked = (key==='all'||cb.value===key); });
-  applyFilter();
+  activeStat = null; // reset so filterByStat always applies fresh
+  const chipToStat = {all:'total',orange:'new-today',purple:'new',blue:'active',red:'upcoming',coral:'upcoming60',amber:'upcoming90'};
+  filterByStat(chipToStat[key] || 'total');
 }
 
 /* ── 필터 적용 카운트 ─────────────────────────── */

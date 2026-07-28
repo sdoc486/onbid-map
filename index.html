@@ -821,7 +821,7 @@ function renderAll() {
   if (activeStat === 'pvct' || activeStat === 'pvct-new' || (isMobile() && activeListType === 'pvct')) {
     renderPvctList();
     document.getElementById('list-cnt').textContent = filteredPvct.length;
-  else renderList(filtered);
+  } else renderList(filtered);
   renderMarkers(filtered);
   renderPvctMarkers();
   if (isMobile()) updateApplyCount();
